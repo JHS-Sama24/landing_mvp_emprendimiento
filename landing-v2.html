@@ -20,6 +20,32 @@
             overflow-x: hidden;
         }
 
+        /* Botón de volver */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            color: #667eea;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .back-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
         /* Patrón de fondo sutil */
         body::before {
             content: '';
@@ -365,6 +391,9 @@
     </style>
 </head>
 <body>
+    <!-- Botón de volver -->
+    <a href="index.html" class="back-button">← Volver al Selector</a>
+    
     <!-- Header con logo -->
     <header class="header">
         <img src="images/logo chance .png" alt="Logo CHANCE" class="logo">
