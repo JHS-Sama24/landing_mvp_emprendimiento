@@ -46,6 +46,56 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
 
+        /* Banner de oferta limitada */
+        .promo-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(45deg, #ff4757, #ff3838);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .promo-banner .countdown {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+            margin: 0 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .badge-discount {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1rem;
+            z-index: 998;
+            animation: bounce 2s infinite;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Ajustar layout para el banner */
+        .main-layout {
+            margin-top: 60px;
+        }
+
         /* Patrón de fondo sutil */
         body::before {
             content: '';
@@ -391,6 +441,17 @@
     </style>
 </head>
 <body>
+    <!-- Banner de oferta limitada -->
+    <div class="promo-banner">
+        🔥 ¡OFERTA ESPECIAL! 75% OFF + 6 meses gratis para los primeros 100 usuarios
+        <span class="countdown" id="countdown-timer">47:59:30</span>
+    </div>
+
+    <!-- Badge de descuento -->
+    <div class="badge-discount">
+        75%<br>OFF
+    </div>
+
     <!-- Botón de volver -->
     <a href="index.html" class="back-button">← Volver al Selector</a>
     
@@ -410,6 +471,9 @@
             <div class="hero-content">
                 <div class="hero-subtitle">¿Cuántas horas pierdes buscando?</div>
                 <h1 class="hero-title">Tu GPS inteligente en Gamarra</h1>
+                <div style="color: #ff4757; font-weight: 700; font-size: 1.1rem; margin-top: 15px;">
+                    🔥 ¡ÚLTIMAS HORAS! Oferta de lanzamiento para primeros usuarios
+                </div>
             </div>
 
             <!-- 2. Qué somos/queremos -->
@@ -418,19 +482,42 @@
                     <span class="brand-highlight">CHANCE</span> convierte el caos de Gamarra en una 
                     <span class="highlight">experiencia simple</span>. Encuentra lo que buscas 
                     <span class="highlight">sin perderte</span>.
+                    <br><br>
+                    <strong style="color: #ff4757;">⚡ OFERTA ESPECIAL AHORA:</strong>
+                    <br>
+                    ✅ 6 meses completamente GRATIS (valor $150)<br>
+                    ✅ Mapas premium de toda Gamarra<br>
+                    ✅ Acceso a ofertas flash exclusivas<br>
+                    ✅ Soporte prioritario VIP
                 </div>
             </div>
 
-            <!-- 3. Caja para info -->
+            <!-- 3. Formulario de captura mejorado -->
             <div class="cta-form">
-                <h2 class="form-title">¡Únete al Beta!</h2>
-                <p class="form-subtitle">Acceso exclusivo antes que nadie</p>
+                <h2 class="form-title" style="color: #EF6C94; font-size: 2rem;">
+                    🎯 ¡ACCESO VIP GRATUITO!
+                </h2>
+                <p class="form-subtitle" style="color: #333; font-size: 1.1rem; margin-bottom: 20px;">
+                    <strong>🔥 SOLO PRIMEROS 100 USUARIOS:</strong><br>
+                    ✅ 6 meses gratis (valor $150)<br>
+                    ✅ Kit de mapas premium<br>
+                    ✅ Ofertas exclusivas 24/7<br>
+                    ✅ Soporte VIP prioritario
+                </p>
                 
                 <form class="form" action="#" method="POST">
-                    <input type="text" name="nombre" placeholder="Tu Nombre" class="form-input" required>
+                    <input type="text" name="nombre" placeholder="Tu Nombre Completo" class="form-input" required>
                     <input type="email" name="correo" placeholder="Tu Email" class="form-input" required>
-                    <button type="submit" class="submit-button">¡Quiero el Beta!</button>
+                    <input type="tel" name="telefono" placeholder="WhatsApp (opcional)" class="form-input">
+                    <button type="submit" class="submit-button" style="background: linear-gradient(45deg, #ff4757, #ff3838); font-size: 1.1rem; font-weight: 700;">
+                        🚀 ¡QUIERO MI ACCESO GRATIS!
+                    </button>
                 </form>
+                
+                <div style="color: #ff4757; font-weight: 700; margin-top: 15px; text-align: center;">
+                    ⏰ ¡Solo quedan <span id="spots-left">19</span> cupos!<br>
+                    🔥 Oferta expira en <span id="countdown-timer2">47:58:15</span>
+                </div>
             </div>
 
         </div>
@@ -493,6 +580,71 @@
         document.querySelectorAll('.hero-content, .value-content, .cta-form').forEach(el => {
             observer.observe(el);
         });
+
+        // Countdown timer
+        function startCountdown() {
+            const timer1 = document.getElementById('countdown-timer');
+            const timer2 = document.getElementById('countdown-timer2');
+            const spotsLeft = document.getElementById('spots-left');
+            
+            let timeLeft = 47 * 60 * 60 + 58 * 60 + 15; // 47:58:15 en segundos
+            let spots = 19;
+            
+            function updateCountdown() {
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+                
+                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timer1) timer1.textContent = timeString;
+                if (timer2) timer2.textContent = timeString;
+                
+                // Reducir spots ocasionalmente
+                if (Math.random() < 0.0008 && spots > 3) {
+                    spots--;
+                    if (spotsLeft) spotsLeft.textContent = spots;
+                }
+                
+                timeLeft--;
+                if (timeLeft < 0) timeLeft = 47 * 60 * 60 + 58 * 60 + 15; // Reset
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+        
+        startCountdown();
+
+        // Formulario mejorado
+        const formElement = document.querySelector('.form');
+        if (formElement) {
+            formElement.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const submitButton = this.querySelector('.submit-button');
+                const originalText = submitButton.innerHTML;
+                
+                submitButton.innerHTML = '🚀 Procesando tu acceso VIP...';
+                submitButton.style.background = 'linear-gradient(45deg, #EB965F, #EF6C94)';
+                
+                setTimeout(() => {
+                    submitButton.innerHTML = '✅ ¡Bienvenido al Club VIP!';
+                    submitButton.style.background = 'linear-gradient(45deg, #4ade80, #22c55e)';
+                    
+                    // Mostrar mensaje de éxito
+                    const successMsg = document.createElement('div');
+                    successMsg.innerHTML = '🎉 ¡Felicidades! Te has unido al selecto grupo de early adopters. Revisa tu email.';
+                    successMsg.style.cssText = 'background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center; font-weight: 600; border: 2px solid #c3e6cb;';
+                    formElement.parentNode.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        submitButton.innerHTML = originalText;
+                        submitButton.style.background = 'linear-gradient(45deg, #ff4757, #ff3838)';
+                        if (successMsg.parentNode) successMsg.remove();
+                    }, 5000);
+                }, 1800);
+            });
+        }
     </script>
 </body>
 </html>
