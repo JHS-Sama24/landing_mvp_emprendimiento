@@ -65,10 +65,14 @@
 
         .promo-banner .countdown {
             background: rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
+            padding: 8px 20px;
             border-radius: 20px;
             margin: 0 10px;
             font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #ffff00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .badge-discount {
@@ -595,7 +599,7 @@
     <div class="promo-banner">
         🔥 ¡OFERTA DE LANZAMIENTO! Únete a los primeros 100 usuarios y obtén 
         <span class="countdown">6 MESES GRATIS</span> 
-        ⏰ Solo quedan <span id="countdown-timer">48:00:00</span>
+        ⏰ Solo quedan <span id="countdown-timer">05:00</span>
     </div>
 
     <!-- Badge de descuento -->
@@ -701,7 +705,7 @@
             <div class="urgency-text">
                 ⏰ ¡Solo quedan <span id="spots-left">23</span> cupos disponibles!
                 <br>
-                🔥 La oferta expira en <span id="countdown-timer2">47:59:45</span>
+                🔥 La oferta expira en <span id="countdown-timer2" style="font-size: 1.2rem; color: #ff0000; font-weight: 900;">04:59</span>
             </div>
         </section>
 
@@ -775,27 +779,26 @@
             const timer2 = document.getElementById('countdown-timer2');
             const spotsLeft = document.getElementById('spots-left');
             
-            let timeLeft = 48 * 60 * 60; // 48 horas en segundos
+            let timeLeft = 5 * 60; // 5 minutos en segundos
             let spots = 23;
             
             function updateCountdown() {
-                const hours = Math.floor(timeLeft / 3600);
-                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 
-                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
                 if (timer1) timer1.textContent = timeString;
                 if (timer2) timer2.textContent = timeString;
                 
-                // Reducir spots ocasionalmente
-                if (Math.random() < 0.001 && spots > 5) {
+                // Reducir spots más frecuentemente
+                if (Math.random() < 0.01 && spots > 5) {
                     spots--;
                     if (spotsLeft) spotsLeft.textContent = spots;
                 }
                 
                 timeLeft--;
-                if (timeLeft < 0) timeLeft = 48 * 60 * 60; // Reset
+                if (timeLeft < 0) timeLeft = 5 * 60; // Reset a 5 minutos
             }
             
             updateCountdown();

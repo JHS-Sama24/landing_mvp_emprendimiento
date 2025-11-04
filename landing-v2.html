@@ -64,10 +64,14 @@
 
         .promo-banner .countdown {
             background: rgba(255, 255, 255, 0.2);
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 15px;
             margin: 0 8px;
             font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #ffff00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .badge-discount {
@@ -444,7 +448,7 @@
     <!-- Banner de oferta limitada -->
     <div class="promo-banner">
         🔥 ¡OFERTA ESPECIAL! 75% OFF + 6 meses gratis para los primeros 100 usuarios
-        <span class="countdown" id="countdown-timer">47:59:30</span>
+        <span class="countdown" id="countdown-timer">05:00</span>
     </div>
 
     <!-- Badge de descuento -->
@@ -516,7 +520,7 @@
                 
                 <div style="color: #ff4757; font-weight: 700; margin-top: 15px; text-align: center;">
                     ⏰ ¡Solo quedan <span id="spots-left">19</span> cupos!<br>
-                    🔥 Oferta expira en <span id="countdown-timer2">47:58:15</span>
+                    🔥 Oferta expira en <span id="countdown-timer2" style="font-size: 1.3rem; color: #ff0000; font-weight: 900;">04:59</span>
                 </div>
             </div>
 
@@ -587,23 +591,31 @@
             const timer2 = document.getElementById('countdown-timer2');
             const spotsLeft = document.getElementById('spots-left');
             
-            let timeLeft = 47 * 60 * 60 + 58 * 60 + 15; // 47:58:15 en segundos
+            let timeLeft = 5 * 60; // 5 minutos en segundos
             let spots = 19;
             
             function updateCountdown() {
-                const hours = Math.floor(timeLeft / 3600);
-                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 
-                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
                 if (timer1) timer1.textContent = timeString;
                 if (timer2) timer2.textContent = timeString;
                 
-                // Reducir spots ocasionalmente
-                if (Math.random() < 0.0008 && spots > 3) {
+                // Reducir spots más frecuentemente
+                if (Math.random() < 0.01 && spots > 3) {
                     spots--;
                     if (spotsLeft) spotsLeft.textContent = spots;
+                }
+                
+                timeLeft--;
+                if (timeLeft < 0) timeLeft = 5 * 60; // Reset a 5 minutos
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
                 }
                 
                 timeLeft--;
