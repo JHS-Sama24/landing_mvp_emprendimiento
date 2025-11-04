@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Formulario CHANCE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: linear-gradient(45deg, #EF6C94, #EB965F);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 108, 148, 0.3);
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Formulario CHANCE</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Usa este formulario para probar que Web3Forms funciona correctamente
+        </p>
+        
+        <form action="https://api.web3forms.com/submit" method="POST" id="testForm">
+            <!-- Web3Forms Access Key -->
+            <input type="hidden" name="access_key" value="a323ce4b-99c4-4779-b2e0-648e4ac696eb">
+            
+            <!-- Configuración -->
+            <input type="hidden" name="subject" value="TEST - Formulario CHANCE App">
+            <input type="hidden" name="from_name" value="Test Landing Page">
+            <input type="hidden" name="redirect" value="https://jhs-sama24.github.io/landing_mvp_emprendimiento/gracias.html">
+            
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="Test Usuario" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="test@ejemplo.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="telefono">Teléfono (opcional):</label>
+                <input type="tel" id="telefono" name="telefono" value="999888777">
+            </div>
+            
+            <!-- Campos adicionales -->
+            <input type="hidden" name="fuente" value="Test Page">
+            <input type="hidden" name="oferta" value="Test de formulario">
+            <input type="hidden" name="timestamp" id="timestamp">
+            
+            <button type="submit">🚀 Enviar Test</button>
+        </form>
+        
+        <div id="status"></div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #e3f2fd; border-radius: 5px;">
+            <h3>📋 Qué verificar:</h3>
+            <ul>
+                <li>✅ El formulario se envía sin errores</li>
+                <li>✅ Recibes un email con los datos</li>
+                <li>✅ La redirección funciona</li>
+                <li>✅ Los datos llegan completos</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Agregar timestamp
+        document.getElementById('timestamp').value = new Date().toISOString();
+        
+        // Manejar envío del formulario
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            const button = this.querySelector('button');
+            const status = document.getElementById('status');
+            
+            // Actualizar timestamp
+            document.getElementById('timestamp').value = new Date().toISOString();
+            
+            // Mostrar estado de envío
+            button.innerHTML = '⏳ Enviando...';
+            button.disabled = true;
+            
+            status.innerHTML = '<div class="status">📤 Enviando formulario de test...</div>';
+            
+            // El formulario se enviará normalmente
+            // Web3Forms manejará el resto
+        });
+    </script>
+</body>
+</html>

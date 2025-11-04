@@ -1,0 +1,14 @@
+{
+  "leads": [],
+  "configuracion": {
+    "fecha_inicio": "2025-11-04",
+    "meta_leads": 100,
+    "oferta_actual": "6 meses gratis + Kit VIP",
+    "valor_oferta": "$150 USD"
+  },
+  "estadisticas": {
+    "total_registros": 0,
+    "conversion_rate": 0,
+    "ultima_actualizacion": ""
+  }
+}

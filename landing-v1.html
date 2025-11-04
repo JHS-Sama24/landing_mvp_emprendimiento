@@ -882,6 +882,115 @@
                 transform: translateX(0);
             }
         }
+
+        /* Modal de confirmación */
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            margin: 15% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideInDown 0.5s ease-out;
+            position: relative;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-message {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .close-modal {
+            background: white;
+            color: #ff6b6b;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .close-modal:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Responsive para el modal */
+        @media (max-width: 576px) {
+            .modal-content {
+                margin: 30% auto;
+                padding: 30px 20px;
+                width: 95%;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+            
+            .modal-icon {
+                font-size: 3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -983,11 +1092,25 @@
                 </div>
             </div>
 
-            <form class="lead-form" action="#" method="POST">
+            <form id="leadForm" class="lead-form" action="https://api.web3forms.com/submit" method="POST">
+                <!-- Web3Forms Access Key -->
+                <input type="hidden" name="access_key" value="a323ce4b-99c4-4779-b2e0-648e4ac696eb">
+                
+                <!-- Configuración adicional -->
+                <input type="hidden" name="subject" value="Nuevo Lead CHANCE App - Acceso VIP">
+                <input type="hidden" name="from_name" value="CHANCE Landing Page">
+                
+                <!-- Campos del formulario -->
                 <input type="text" name="nombre" placeholder="Tu Nombre Completo" class="lead-input" required>
-                <input type="email" name="correo" placeholder="Tu Email" class="lead-input" required>
+                <input type="email" name="email" placeholder="Tu Email" class="lead-input" required>
                 <input type="tel" name="telefono" placeholder="WhatsApp (opcional)" class="lead-input">
-                <button type="submit" class="lead-button">
+                
+                <!-- Campos adicionales para mejor segmentación -->
+                <input type="hidden" name="fuente" value="Landing Page MVP">
+                <input type="hidden" name="oferta" value="6 meses gratis + Kit VIP">
+                <input type="hidden" name="timestamp" id="timestamp">
+                
+                <button id="submitBtn" type="submit" class="lead-button">
                     🔥 ¡QUIERO MI ACCESO GRATIS!
                 </button>
             </form>
@@ -1012,19 +1135,108 @@
 
     </div>
 
+    <!-- Modal de confirmación -->
+    <div id="confirmationModal" class="confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <h2 class="modal-title">¡Registro Exitoso!</h2>
+            <p class="modal-message">
+                🔥 <strong>¡Felicidades!</strong> Te has unido a los primeros 100 usuarios VIP.<br><br>
+                📧 Revisa tu email en los próximos minutos.<br>
+                📱 Pronto recibirás tu acceso exclusivo a CHANCE.<br><br>
+                🎁 <strong>Bonus:</strong> Kit VIP + 6 meses gratis incluidos
+            </p>
+            <button class="close-modal" onclick="closeModal()">¡Genial, entendido!</button>
+        </div>
+    </div>
+
     <script>
-        // Alternar imágenes de fondo cada 2 segundos
-        const backgroundImages = document.querySelectorAll('.background-image');
-        let currentImageIndex = 0;
+        // Wrap todo el JavaScript en try-catch para mejor manejo de errores
+        try {
+            // Manejo del formulario con modal de confirmación
+            const leadForm = document.getElementById('leadForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Función para mostrar el modal
+            function showModal() {
+                document.getElementById('confirmationModal').style.display = 'block';
+            }
+            
+            // Función para cerrar el modal
+            window.closeModal = function() {
+                document.getElementById('confirmationModal').style.display = 'none';
+            }
+            
+            // Cerrar modal al hacer clic fuera de él
+            window.onclick = function(event) {
+                const modal = document.getElementById('confirmationModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+            
+            // Manejar envío del formulario
+            if (leadForm) {
+                leadForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Cambiar texto del botón mientras se envía
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '⏳ Enviando...';
+                    submitBtn.disabled = true;
+                    
+                    try {
+                        // Crear FormData
+                        const formData = new FormData(leadForm);
+                        
+                        // Agregar timestamp
+                        const timestampInput = document.getElementById('timestamp');
+                        if (timestampInput) {
+                            timestampInput.value = new Date().toISOString();
+                        }
+                        
+                        // Enviar formulario
+                        const response = await fetch(leadForm.action, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (response.ok) {
+                            // Resetear formulario
+                            leadForm.reset();
+                            
+                            // Mostrar modal de confirmación
+                            showModal();
+                        } else {
+                            throw new Error('Error al enviar el formulario');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('❌ Hubo un error al enviar el formulario. Por favor, inténtalo nuevamente.');
+                    } finally {
+                        // Restaurar botón
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
 
-        function switchBackground() {
-            backgroundImages[currentImageIndex].classList.remove('active');
-            currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
-            backgroundImages[currentImageIndex].classList.add('active');
-        }
+            // Alternar imágenes de fondo cada 2 segundos
+            const backgroundImages = document.querySelectorAll('.background-image');
+            let currentImageIndex = 0;
 
-        // Iniciar la alternancia de fondos con tiempo más lento
-        setInterval(switchBackground, 4000);
+            function switchBackground() {
+                if (backgroundImages.length > 0) {
+                    backgroundImages[currentImageIndex].classList.remove('active');
+                    currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+                    backgroundImages[currentImageIndex].classList.add('active');
+                }
+            }
+
+            // Iniciar la alternancia de fondos con tiempo más lento
+            if (backgroundImages.length > 0) {
+                setInterval(switchBackground, 4000);
+            }
 
         // Efecto parallax mejorado y suave en scroll - optimizado para móviles
         let ticking = false;
@@ -1066,41 +1278,14 @@
             }
         }, { passive: true });
 
-        // Animación al enviar formulario
-        const form = document.querySelector('.lead-form');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const submitButton = this.querySelector('.lead-button');
-                const originalText = submitButton.innerHTML;
-                
-                submitButton.innerHTML = '🚀 Procesando...';
-                submitButton.style.background = 'linear-gradient(135deg, #EB965F 0%, #EF6C94 100%)';
-                
-                setTimeout(() => {
-                    submitButton.innerHTML = '✅ ¡Bienvenido al Club VIP!';
-                    submitButton.style.background = 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)';
-                    
-                    // Mostrar mensaje de éxito
-                    const successMsg = document.createElement('div');
-                    successMsg.innerHTML = '🎉 ¡Felicidades! Revisa tu email en los próximos minutos';
-                    successMsg.style.cssText = 'background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center; font-weight: 600;';
-                    form.parentNode.appendChild(successMsg);
-                    
-                    setTimeout(() => {
-                        submitButton.innerHTML = originalText;
-                        submitButton.style.background = 'linear-gradient(45deg, #EF6C94, #EB965F)';
-                        successMsg.remove();
-                    }, 4000);
-                }, 1500);
-            });
-        }
-
         // Countdown timer
         function startCountdown() {
             const timer1 = document.getElementById('countdown-timer');
             const timer2 = document.getElementById('countdown-timer2');
             const spotsLeft = document.getElementById('spots-left');
+            
+            // Solo ejecutar si al menos uno de los timers existe
+            if (!timer1 && !timer2) return;
             
             let timeLeft = 5 * 60; // 5 minutos en segundos
             let spots = 23;
@@ -1115,9 +1300,9 @@
                 if (timer2) timer2.textContent = timeString;
                 
                 // Reducir spots más frecuentemente
-                if (Math.random() < 0.01 && spots > 5) {
+                if (Math.random() < 0.01 && spots > 5 && spotsLeft) {
                     spots--;
-                    if (spotsLeft) spotsLeft.textContent = spots;
+                    spotsLeft.textContent = spots;
                 }
                 
                 timeLeft--;
@@ -1129,24 +1314,6 @@
         }
         
         startCountdown();
-        const submitButton = document.querySelector('.submit-button');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            submitButton.innerHTML = '¡Enviando...!';
-            submitButton.style.background = 'linear-gradient(135deg, #EB965F 0%, #EF6C94 100%)';
-            
-            setTimeout(() => {
-                submitButton.innerHTML = '¡Listo! ✨';
-                submitButton.style.background = 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)';
-                
-                setTimeout(() => {
-                    submitButton.innerHTML = '¡Avisarme!';
-                    submitButton.style.background = 'linear-gradient(135deg, #EF6C94 0%, #EB965F 100%)';
-                }, 2000);
-            }, 1500);
-        });
 
         // Efecto de entrada progresiva
         const observerOptions = {
@@ -1166,6 +1333,11 @@
         document.querySelectorAll('.hero-section, .value-section, .cta-section').forEach(el => {
             observer.observe(el);
         });
+        
+        } catch (error) {
+            console.error('Error en el JavaScript de la landing page:', error);
+            // Continuar sin crashear la página
+        }
     </script>
 </body>
 </html>
