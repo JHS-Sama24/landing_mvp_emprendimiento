@@ -1153,36 +1153,58 @@
     <script>
         // Wrap todo el JavaScript en try-catch para mejor manejo de errores
         try {
-            // Manejo del formulario con modal de confirmación
-            const leadForm = document.getElementById('leadForm');
-            const submitBtn = document.getElementById('submitBtn');
-            
-            // Debug: verificar elementos
-            console.log('📋 leadForm:', leadForm);
-            console.log('🔘 submitBtn:', submitBtn);
-            
-            // Función para mostrar el modal
-            function showModal() {
-                document.getElementById('confirmationModal').style.display = 'block';
-            }
-            
-            // Función para cerrar el modal
-            window.closeModal = function() {
-                document.getElementById('confirmationModal').style.display = 'none';
-            }
-            
-            // Cerrar modal al hacer clic fuera de él
-            window.onclick = function(event) {
-                const modal = document.getElementById('confirmationModal');
-                if (event.target === modal) {
-                    modal.style.display = 'none';
+            // Esperar a que el DOM esté completamente cargado
+            function initializeApp() {
+                console.log('🚀 Inicializando aplicación...');
+                
+                // Manejo del formulario con modal de confirmación
+                const leadForm = document.getElementById('leadForm');
+                const submitBtn = document.getElementById('submitBtn');
+                
+                // Debug: verificar elementos
+                console.log('📋 leadForm:', leadForm);
+                console.log('🔘 submitBtn:', submitBtn);
+                
+                if (!leadForm) {
+                    console.error('❌ No se encontró el formulario con ID "leadForm"');
+                    return;
                 }
-            }
-            
-            // Manejar envío del formulario
-            if (leadForm) {
+                
+                if (!submitBtn) {
+                    console.error('❌ No se encontró el botón con ID "submitBtn"');
+                }
+                
+                // Función para mostrar el modal
+                function showModal() {
+                    const modal = document.getElementById('confirmationModal');
+                    if (modal) {
+                        modal.style.display = 'block';
+                    } else {
+                        console.error('❌ No se encontró el modal de confirmación');
+                        alert('✅ ¡Formulario enviado exitosamente! Revisa tu email.');
+                    }
+                }
+                
+                // Función para cerrar el modal
+                window.closeModal = function() {
+                    const modal = document.getElementById('confirmationModal');
+                    if (modal) {
+                        modal.style.display = 'none';
+                    }
+                }
+                
+                // Cerrar modal al hacer clic fuera de él
+                window.onclick = function(event) {
+                    const modal = document.getElementById('confirmationModal');
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                }
+                
+                // Manejar envío del formulario
                 leadForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
+                    console.log('📤 Enviando formulario...');
                     
                     // Cambiar texto del botón mientras se envía (solo si existe)
                     let originalText = '🔥 ¡QUIERO MI ACCESO GRATIS!';
@@ -1203,10 +1225,13 @@
                         }
                         
                         // Enviar formulario
+                        console.log('🌐 Enviando a Web3Forms...');
                         const response = await fetch(leadForm.action, {
                             method: 'POST',
                             body: formData
                         });
+                        
+                        console.log('📡 Respuesta:', response.status, response.statusText);
                         
                         if (response.ok) {
                             // Resetear formulario
@@ -1214,11 +1239,12 @@
                             
                             // Mostrar modal de confirmación
                             showModal();
+                            console.log('✅ Formulario enviado exitosamente');
                         } else {
                             throw new Error('Error al enviar el formulario');
                         }
                     } catch (error) {
-                        console.error('Error:', error);
+                        console.error('❌ Error:', error);
                         alert('❌ Hubo un error al enviar el formulario. Por favor, inténtalo nuevamente.');
                     } finally {
                         // Restaurar botón (solo si existe)
@@ -1228,28 +1254,38 @@
                         }
                     }
                 });
-            }
+                
+                console.log('✅ Formulario inicializado correctamente');
+                
+                // Alternar imágenes de fondo cada 2 segundos
+                const backgroundImages = document.querySelectorAll('.background-image');
+                let currentImageIndex = 0;
 
-            // Alternar imágenes de fondo cada 2 segundos
-            const backgroundImages = document.querySelectorAll('.background-image');
-            let currentImageIndex = 0;
+                function switchBackground() {
+                    if (backgroundImages.length > 0) {
+                        backgroundImages[currentImageIndex].classList.remove('active');
+                        currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+                        backgroundImages[currentImageIndex].classList.add('active');
+                    }
+                }
 
-            function switchBackground() {
+                // Iniciar la alternancia de fondos con tiempo más lento
                 if (backgroundImages.length > 0) {
-                    backgroundImages[currentImageIndex].classList.remove('active');
-                    currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
-                    backgroundImages[currentImageIndex].classList.add('active');
+                    setInterval(switchBackground, 4000);
                 }
             }
-
-            // Iniciar la alternancia de fondos con tiempo más lento
-            if (backgroundImages.length > 0) {
-                setInterval(switchBackground, 4000);
+            
+            // Ejecutar inicialización cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeApp);
+            } else {
+                // DOM ya está cargado
+                initializeApp();
             }
 
-        // Efecto parallax mejorado y suave en scroll - optimizado para móviles
-        let ticking = false;
-        const isMobile = window.innerWidth <= 768;
+            // Efecto parallax mejorado y suave en scroll - optimizado para móviles
+            let ticking = false;
+            const isMobile = window.innerWidth <= 768;
         
         function updateParallax() {
             const scrolled = window.pageYOffset;
